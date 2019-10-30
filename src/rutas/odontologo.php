@@ -132,4 +132,33 @@
 			echo '{"Error": {"text":'.$e->getMessage().'}';
 		}
 	});
+
+	//
+	//------------------- Metodos para los consultorios--------------------
+	//
+
+	/* Metodo para insertar un consultorio */
+	$app->post('/consultorios/nuevo', function (Request $request, Response $response) {
+
+		$id_consultorio = $request->getParam('id_consultorio');
+		$usuario_id_consultorio = $request->getParam('usuario_id_consultorio');
+		$nombre_consultorio = $request->getParam('nombre_consultorio');
+		$nit_consultorio = $request->getParam('nit_consultorio');
+		$direccion_consultorio = $request->getParam('direccion_consultorio');
+		$telefono_consultorio = $request->getParam('telefono_consultorio');
+
+		try {
+			$objCrud = new Crud();
+			$objCrud ->setTablas("consultorio");
+			$objCrud ->setCampos("CONS_ID,USU_ID,CONS_NIT,CONS_NOMBRE,CONS_DIRECCION,CONS_TELEFONO");
+			$objCrud ->setValores("'$id_consultorio','$usuario_id_consultorio','$nit_consultorio','$nombre_consultorio','direccion_consultorio','$telefono_consultorio'");
+			$resultado = $objCrud ->create();
+
+			echo json_encode($resultado);
+
+		} catch (PDOException $e) {
+			echo '{"Error": {"text":'.$e->getMessage().'}';
+		}
+	});
+
  ?>
