@@ -5,7 +5,8 @@
 	$app = new \Slim\App;
 	
 	
-	/* Metodo para listar todos los odontologos */
+	/* ---------- Metodo para listar todos los odontologos ------------ */
+
 	$app->get('/odontologos', function (Request $request, Response $response) {
 		
 		try {
@@ -137,6 +138,27 @@
 	//------------------- Metodos para los consultorios--------------------
 	//
 
+
+	/* Metodo para listar todos los consultorios */
+	$app->get('/consultorios', function (Request $request, Response $response) {
+		
+		try {
+			$objCrud = new Crud();
+			$objCrud->setTablas("consultorio");
+			$objCrud->setExpresion("*");
+			$resultado = $objCrud->read();
+
+			if ($resultado > 0) {
+				echo json_encode($objCrud->getFilas());
+			}else {
+				echo json_encode(false);
+			}
+
+		} catch (PDOException $e) {
+			echo '{"Error": {"text":'.$e->getMessage().'}';
+		}
+	});
+
 	/* Metodo para insertar un consultorio */
 	$app->post('/consultorios/nuevo', function (Request $request, Response $response) {
 
@@ -151,7 +173,7 @@
 			$objCrud = new Crud();
 			$objCrud ->setTablas("consultorio");
 			$objCrud ->setCampos("CONS_ID,USU_ID,CONS_NIT,CONS_NOMBRE,CONS_DIRECCION,CONS_TELEFONO");
-			$objCrud ->setValores("'$id_consultorio','$usuario_id_consultorio','$nit_consultorio','$nombre_consultorio','direccion_consultorio','$telefono_consultorio'");
+			$objCrud ->setValores("'$id_consultorio','$usuario_id_consultorio','$nit_consultorio','$nombre_consultorio','$direccion_consultorio','$telefono_consultorio'");
 			$resultado = $objCrud ->create();
 
 			echo json_encode($resultado);
@@ -160,5 +182,136 @@
 			echo '{"Error": {"text":'.$e->getMessage().'}';
 		}
 	});
+
+	/* Metodo para buscar un consultorio */
+	$app->get('/consultorios/{id}', function (Request $request, Response $response) {
+
+		$id = $request->getAttribute('id');
+	
+	try {
+		$objCrud = new Crud();
+		$objCrud ->setTablas("consultorio");
+		$objCrud ->setExpresion("*");
+		$objCrud ->setCondicion("CONS_ID = $id");
+		$resultado = $objCrud->read();
+
+		if ($resultado > 0) {
+			echo json_encode($objCrud->getFilas());
+		}else {
+			echo json_encode(false);
+		}
+
+	} catch (PDOException $e) {
+		echo '{"Error": {"text":'.$e->getMessage().'}';
+	}
+});
+
+	/* Metodo para eliminar un consultorio */
+	$app->delete('/consultorios/eliminar/{id}', function (Request $request, Response $response) {
+
+		$documento = $request->getAttribute('id');
+
+		try {
+			$objCrud = new Crud();
+			$objCrud ->setTablas("consultorio");
+			$objCrud ->setCondicion("CONS_ID = '$documento'");
+			$resultado = $objCrud ->delete();
+
+			echo json_encode($resultado);
+
+		} catch (PDOException $e) {
+			echo '{"Error": {"text":'.$e->getMessage().'}';
+		}
+	});
+
+	//
+	//------------------- Metodos para los usuarios --------------------
+	//
+
+	/* Metodo para insertar un usuario */
+	$app->post('/usuarios/nuevo', function (Request $request, Response $response) {
+
+		$id_usuario = $request->getParam('id');
+		$tipo_usuario = $request->getParam('tipo_usuario');
+		$usuario_nombre = $request->getParam('usu_nombre');
+		$usuario_correo = $request->getParam('usu_correo');
+		$usuario_telefono = $request->getParam('usu_telefono');
+		$usuario_password = $request->getParam('usu_password');
+
+		try {
+			$objCrud = new Crud();
+			$objCrud ->setTablas("usuario");
+			$objCrud ->setCampos("USU_ID,USU_TIPOUSUARIO,USU_NOMBRE,USU_CORREO,USU_TELEFONO,PASSWORD");
+			$objCrud ->setValores("'$id_usuario','$tipo_usuario','$usuario_nombre','$usuario_correo','$usuario_telefono','$usuario_password'");
+			$resultado = $objCrud ->create();
+
+			echo json_encode($resultado);
+
+		} catch (PDOException $e) {
+			echo '{"Error": {"text":'.$e->getMessage().'}';
+		}
+	});
+
+
+	/* Metodo para buscar todos los usuarios */
+	$app->get('/usuarios', function (Request $request, Response $response) {
+		
+		try {
+			$objCrud = new Crud();
+			$objCrud->setTablas("usuario");
+			$objCrud->setExpresion("*");
+			$resultado = $objCrud->read();
+
+			if ($resultado > 0) {
+				echo json_encode($objCrud->getFilas());
+			}else {
+				echo json_encode(false);
+			}
+
+		} catch (PDOException $e) {
+			echo '{"Error": {"text":'.$e->getMessage().'}';
+		}
+	});
+
+	/* Metodo para buscar un solo usuario */
+	$app->get('/usuarios/{id}', function (Request $request, Response $response) {
+
+		$id = $request->getAttribute('id');
+	
+	try {
+		$objCrud = new Crud();
+		$objCrud ->setTablas("usuario");
+		$objCrud ->setExpresion("*");
+		$objCrud ->setCondicion("USU_ID = $id");
+		$resultado = $objCrud->read();
+
+		if ($resultado > 0) {
+			echo json_encode($objCrud->getFilas());
+		}else {
+			echo json_encode(false);
+		}
+
+	} catch (PDOException $e) {
+		echo '{"Error": {"text":'.$e->getMessage().'}';
+	}
+
+	/* Metodo para eliminar usuarios */
+	$app->delete('/usuarios/eliminar/{id}', function (Request $request, Response $response) {
+
+		$documento = $request->getAttribute('id');
+
+		try {
+			$objCrud = new Crud();
+			$objCrud ->setTablas("usuario");
+			$objCrud ->setCondicion("USU_ID = '$documento'");
+			$resultado = $objCrud ->delete();
+
+			echo json_encode($resultado);
+
+		} catch (PDOException $e) {
+			echo '{"Error": {"text":'.$e->getMessage().'}';
+		}
+	})
+
 
  ?>
